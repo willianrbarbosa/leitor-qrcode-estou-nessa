@@ -1,7 +1,7 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StyleSheet } from 'react-native';
-import { ConfigurationPage, HomePage, QRCodePage } from './views';
+import { LoginPage, HomePage, QRCodePage, ConfigurationPage } from './views';
 
 export default function App() {
 
@@ -9,7 +9,22 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator
+        initialRouteName="LoginPage"
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        <Stack.Screen 
+          name='LoginPage'
+          component={LoginPage}
+          options={{
+            title: 'Leitor QRCode - Acesso',
+            headerStyle: { backgroundColor: '#f68d40', height: 110 },
+            headerTitleStyle: { fontWeight: 'bold', alignSelf: 'center', margin: 'auto' },
+            headerTintColor: '#FFF',
+          }}
+        />
         <Stack.Screen 
           name='HomePage'
           component={HomePage}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { appCss } from "../assets/css/AppCss";
-import { qrCodeCss } from '../assets/css/QRCodeCss';
+import { appCss } from "../../assets/css/AppCss";
+import { qrCodeCss } from '../../assets/css/QRCodeCss';
 import { Text, View, StyleSheet, Button } from "react-native";
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import AwesomeAlert from 'react-native-awesome-alerts';

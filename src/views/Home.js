@@ -1,5 +1,5 @@
 import React from "react";
-import { appCss } from "../assets/css/AppCss";
+import { appCss } from "../../assets/css/AppCss";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 
 export default function HomePage({navigation}) {

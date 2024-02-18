@@ -1,5 +1,5 @@
 import React from "react";
-import { appCss } from "../assets/css/AppCss";
+import { appCss } from "../../assets/css/AppCss";
 import { Text, View } from "react-native";
 
 export default function ConfigurationPage(props) {
