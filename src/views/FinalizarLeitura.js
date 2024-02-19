@@ -10,7 +10,7 @@ import moment from "moment";
 import { theme } from '../core/theme';
 import Button from '../components/Button';
 
-export default function FinalizarLeitura() {
+export default function FinalizarLeitura({navigation}) {
   const route = useRoute();
   const nomeSessao = route.params?.nomeSessao;
   const pontoLeitura = route.params?.pontoLeitura;
@@ -51,20 +51,34 @@ export default function FinalizarLeitura() {
     const params = {
       franquia_codigo: '05',
       franquia_cnpj: '09.520.987/0001-40',
-      qrcodes: leituraQRCodes,
+      sessao: leituraQRCodes.sessao,
+      ponto_leitura: leituraQRCodes.ponto_leitura,
+      leituras: leituraQRCodes.leituras,
     };
 
     let response = await axios
     .post(`https://estounessa.com.br/admin/app/Model/Admin/LeituraQRCodeAPP.php`, params, { headers })
     .then((response) => {
       const responseData = response.data;
+      if ( !responseData.return ) {
+        showAlert(
+          'error', 
+          'Erro ao enviar QRCode.', 
+          `Erro ao enviar os QRCodes para o portal Estou Nessa! Erro: ${responseData.message}`
+        );
+        return false;
+      }
+
       showAlert(
         (responseData.return ? 'success' : 'error'),
         (responseData.return ? 'QRCodes Enviados com sucesso' : 'Erro ao enviar QRCodes.'), 
         '', 
         `${responseData.message}`
       );
-      return responseData.return;
+      AsyncStorage.removeItem('QRCODES');
+      setLoading(true);
+      setLeituraQRCodes({});
+      return true;
     })
     .catch((error) => {
       showAlert(
@@ -73,25 +87,6 @@ export default function FinalizarLeitura() {
         `Erro ao enviar os QRCodes para o portal Estou Nessa! Erro: ${error.message}`
       );
     });
-  };
-
-  const showQRCodes = async () => {
-    try {
-      if (leituraQRCodes !== null) {
-        if ( leituraQRCodes.leituras.length ) {
-          const aLeituras = leituraQRCodes.leituras;
-          aLeituras.map((qrcode, idx) => {
-            return (
-              <View key={idx}>
-                <Text>{qrcode.data_hora_leitura}: {qrcode.texto}</Text>
-              </View>
-            );
-          });
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    }
   };
 
   const showAlert = (type, title, message) => {
@@ -113,7 +108,6 @@ export default function FinalizarLeitura() {
       confirmText: null,
       confirmButtonColor: null,
     });
-    setScanned(false);
   };
 
   return (
@@ -124,7 +118,7 @@ export default function FinalizarLeitura() {
 
       <ScrollView style={appCss.scrollView}>
         { isLoading ? 
-          <Text>Carregando leituras...</Text> :
+          <Text>Nenhuma leitura encontrada...</Text> :
           leituraQRCodes.leituras.map((qrcode, idx) => {
             return (
               <View key={idx} style={appCss.leituraCard}>
@@ -155,12 +149,26 @@ export default function FinalizarLeitura() {
       />
 
       <View style={{position: 'absolute', left: 0, right: 0, bottom: 0, alignItems: 'center', paddingHorizontal: 10, paddingVertical: 5, backgroundColor: theme.colors.secondary }}>
-        <Button
-          mode="contained"
-          onPress={enviaLeituraAdmin}
-        >
-          Finalizar Leitura
-        </Button>
+        {isLoading ?
+          <Button
+            mode="outlined"
+            onPress={() => navigation.navigate('QRCodePage', {
+              name: 'Ler QRCode',
+              nomeSessao: nomeSessao,
+              pontoLeitura: pontoLeitura
+            }
+          )}
+          >
+            Ler QRCode
+          </Button>
+          :
+          <Button
+            mode="contained"
+            onPress={enviaLeituraAdmin}
+          >
+            Finalizar Leitura
+          </Button>
+        }
       </View>
     </SafeAreaView>
   );
