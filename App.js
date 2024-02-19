@@ -1,7 +1,8 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StyleSheet } from 'react-native';
-import { LoginPage, HomePage, QRCodePage, ConfigurationPage } from './views';
+import { LoginPage, HomePage, QRCodePage, FinalizarLeitura } from './src/views';
+import { theme } from './src/core/theme';
 
 export default function App() {
 
@@ -9,30 +10,19 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName="LoginPage"
-        screenOptions={{
-          headerShown: false,
-        }}
-      >
-        <Stack.Screen 
-          name='LoginPage'
-          component={LoginPage}
+      <Stack.Navigator initialRouteName="LoginPage">
+        <Stack.Screen name='LoginPage' component={LoginPage} 
           options={{
-            title: 'Leitor QRCode - Acesso',
-            headerStyle: { backgroundColor: '#f68d40', height: 110 },
-            headerTitleStyle: { fontWeight: 'bold', alignSelf: 'center', margin: 'auto' },
-            headerTintColor: '#FFF',
-          }}
-        />
+            headerShown: false
+          }}/>
         <Stack.Screen 
           name='HomePage'
           component={HomePage}
           options={{
-            title: 'Leitor QRCode - Home',
-            headerStyle: { backgroundColor: '#f68d40', height: 110 },
+            title: 'Leitor QRCode - Menu',
+            headerStyle: { backgroundColor: theme.colors.estounessa, height: 60 },
             headerTitleStyle: { fontWeight: 'bold', alignSelf: 'center', margin: 'auto' },
-            headerTintColor: '#FFF',
+            headerTintColor: theme.colors.surface,
           }}
         />
         <Stack.Screen 
@@ -40,19 +30,19 @@ export default function App() {
           component={QRCodePage}
           options={{
             title: 'Ler QRCode',
-            headerStyle: { backgroundColor: '#f68d40', height: 110 },
+            headerStyle: { backgroundColor: theme.colors.estounessa, height: 60 },
             headerTitleStyle: { fontWeight: 'bold', alignSelf: 'center', margin: 'auto' },
-            headerTintColor: '#FFF',
+            headerTintColor: theme.colors.surface,
           }}
         />
         <Stack.Screen 
-          name='ConfigurationPage'
-          component={ConfigurationPage}
+          name='FinalizarLeitura'
+          component={FinalizarLeitura}
           options={{
-            title: 'Configurações',
-            headerStyle: { backgroundColor: '#f68d40', height: 110 },
+            title: 'Finalizar Leitura',
+            headerStyle: { backgroundColor: theme.colors.estounessa, height: 60 },
             headerTitleStyle: { fontWeight: 'bold', alignSelf: 'center', margin: 'auto' },
-            headerTintColor: '#FFF',
+            headerTintColor: theme.colors.surface,
           }}
         />
       </Stack.Navigator>  

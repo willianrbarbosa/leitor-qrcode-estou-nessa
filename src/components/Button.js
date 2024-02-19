@@ -1,7 +1,7 @@
-import React from 'react'
-import { StyleSheet } from 'react-native'
-import { Button as PaperButton } from 'react-native-paper'
-import { theme } from '../core/theme'
+import React from 'react';
+import { StyleSheet } from 'react-native';
+import { Button as PaperButton } from 'react-native-paper';
+import { theme } from '../core/theme';
 
 export default function Button({ mode, style, ...props }) {
   return (
@@ -11,7 +11,10 @@ export default function Button({ mode, style, ...props }) {
         mode === 'outlined' && { backgroundColor: theme.colors.surface },
         style,
       ]}
-      labelStyle={styles.text}
+      labelStyle={[
+        styles.text,
+        mode === 'outlined' && { color: theme.colors.estounessa },
+      ]}
       mode={mode}
       {...props}
     />
@@ -20,6 +23,7 @@ export default function Button({ mode, style, ...props }) {
 
 const styles = StyleSheet.create({
   button: {
+    backgroundColor: theme.colors.estounessa,
     width: '100%',
     marginVertical: 10,
     paddingVertical: 2,

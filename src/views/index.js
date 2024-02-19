@@ -1,6 +1,6 @@
 import LoginPage from './Login';
 import HomePage from './Home';
 import QRCodePage from './QRCode';
-import ConfigurationPage from './Configuration';
+import FinalizarLeitura from './FinalizarLeitura';
 
-export { LoginPage, HomePage, QRCodePage, ConfigurationPage };
+export { LoginPage, HomePage, QRCodePage, FinalizarLeitura };

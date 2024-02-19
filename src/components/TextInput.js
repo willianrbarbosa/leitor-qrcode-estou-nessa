@@ -1,15 +1,16 @@
-import React from 'react'
-import { View, StyleSheet, Text } from 'react-native'
-import { TextInput as Input } from 'react-native-paper'
-import { theme } from '../core/theme'
+import React from 'react';
+import { View, StyleSheet, Text } from 'react-native';
+import { TextInput as Input } from 'react-native-paper';
+import { theme } from '../core/theme';
 
 export default function TextInput({ errorText, description, ...props }) {
   return (
     <View style={styles.container}>
       <Input
         style={styles.input}
-        selectionColor={theme.colors.primary}
-        underlineColor="transparent"
+        selectionColor={theme.colors.estounessa}
+        activeUnderlineColor={theme.colors.estounessa}
+        activeOutlineColor={theme.colors.estounessa}
         mode="outlined"
         {...props}
       />

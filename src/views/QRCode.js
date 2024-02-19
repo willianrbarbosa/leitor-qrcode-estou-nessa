@@ -4,10 +4,20 @@ import { qrCodeCss } from '../../assets/css/QRCodeCss';
 import { Text, View, StyleSheet, Button } from "react-native";
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import AwesomeAlert from 'react-native-awesome-alerts';
-import axios from 'axios';
+import { useRoute } from "@react-navigation/native"
+import Footer from "../components/Footer";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import moment from "moment";
+import { theme } from '../core/theme';
 
-export default function QRCodePage(props) {
+export default function QRCodePage() {
+  const route = useRoute();
+  const nomeSessao = route.params?.nomeSessao;
+  const pontoLeitura = route.params?.pontoLeitura;
+
   const [hasPermission, setHasPermission] = useState(null);
+  const [isLoading, setLoading] = useState(true);
+  const [leituraQRCodes, setLeituraQRCodes] = useState({});
   const [scanned, setScanned] = useState(false);
   const [alertConfig, setAlertConfig ] = useState({
     displayAlert: false,
@@ -25,7 +35,21 @@ export default function QRCodePage(props) {
       setHasPermission(status === 'granted');
     };
 
+    const getQRCodes = async () => {
+      try {
+        const leituras = await AsyncStorage.getItem('QRCODES');
+        if (leituras !== null) {
+          const QRCodes = JSON.parse(leituras);
+          setLeituraQRCodes(QRCodes);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    
     getBarCodeScannerPermissions();
+    getQRCodes();
   }, []);
 
   const handleBarCodeScanned = async ({ type, data }) => {
@@ -34,34 +58,45 @@ export default function QRCodePage(props) {
     //appCss.qr__code(displayQR)
     // alert(`Bar code with type ${type} and data ${data} has been scanned!`);
 
-    const headers = { 
-      'Content-Type': 'application/json',
-      'Accept': '*/*',
-    };
-    const params = {
-      franquia_codigo: '05',
-      franquia_cnpj: '09.520.987/0001-40',
-      texto_qrcode: data,
-    };
-    let response = await axios
-    .post(`https://estounessa.com.br/admin/app/Model/Admin/LeituraQRCodeAPP.php`, params, { headers })
-    .then((response) => {
-      const responseData = response.data;
+    try {
+      let QRCodes = {};
+      const leituras = await AsyncStorage.getItem('QRCODES');
+      if ( leituras ) {
+        QRCodes = JSON.parse(leituras);
+        QRCodes.sessao = nomeSessao;
+        QRCodes.ponto_leitura = pontoLeitura;
+        QRCodes.leituras.push({
+          texto: data,
+          data_hora_leitura: moment().format('DD/MM/YYYY HH:mm:ss')
+        });
+      } else {
+        QRCodes = {
+          sessao: nomeSessao,
+          ponto_leitura: pontoLeitura,
+          leituras: [{
+            texto: data,
+            data_hora_leitura: moment().format('DD/MM/YYYY HH:mm:ss')
+          }]
+        };
+      }
+
+      await AsyncStorage.setItem('QRCODES', JSON.stringify(QRCodes));
+
       showAlert(
-        (responseData.return ? 'success' : 'error'),
-        (responseData.return ? 'QRCode Enviado com sucesso' : 'Erro ao enviar QRCode.'), 
+        'success',
+        'QRCode salvo com sucesso', 
         '', 
-        `Texto ${data}: ${responseData.message}`
+        `Texto ${data}`
       );
-      return responseData.return;
-    })
-    .catch((error) => {
+
+      setLeituraQRCodes(QRCodes);
+    } catch (error) {
       showAlert(
         'error', 
-        'Erro ao enviar QRCode.', 
-        `Erro ao enviar o Texto ${data} para o portal Estou Nessa! Erro: ${error.message}`
+        'Erro ao salvar QRCode.', 
+        `Erro ao salvar o Texto ${data}! Erro: ${error.message}`
       );
-    });
+    }
   };
 
   if (hasPermission === null) {
@@ -94,11 +129,11 @@ export default function QRCodePage(props) {
   };
 
   return (
-    <View style={appCss.container}>
+    <View style={{...appCss.container, backgroundColor: 'black'}}>
       {/* <Text style={appCss.buttonText}>Leitura QR Code</Text> */}
       <BarCodeScanner
         onBarCodeScanned={scanned ? undefined : value=>handleBarCodeScanned(value)}
-        style={StyleSheet.absoluteFillObject}
+        style={appCss.barCodeScanner}
       >
         <View style={qrCodeCss.layerTop} />
         <View style={qrCodeCss.layerCenter}>
@@ -128,6 +163,16 @@ export default function QRCodePage(props) {
           hideAlert();
         }}
       />
+
+      <View style={{position: 'absolute', left: 0, right: 0, bottom: 0, alignItems: 'center', padding: 10, backgroundColor: theme.colors.surface }}>
+        <Text style={{color: theme.colors.estounessa}}>
+          {!isLoading ? 'Última leitura: ' + leituraQRCodes.leituras[leituraQRCodes.leituras.length - 1].texto : null}
+          </Text>
+        <Text style={{color: theme.colors.secondary}}>
+          Sessão: {nomeSessao} | Ponto de Leitura: {pontoLeitura}
+        </Text>
+      </View>
     </View>
+
   );
 }
