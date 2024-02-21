@@ -166,7 +166,7 @@ export default function FinalizarLeitura({navigation}) {
             mode="contained"
             onPress={enviaLeituraAdmin}
           >
-            Finalizar Leitura
+            Confirmar e enviar Leitura
           </Button>
         }
       </View>

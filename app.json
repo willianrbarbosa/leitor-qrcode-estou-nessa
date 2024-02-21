@@ -4,7 +4,9 @@
     "slug": "estounessa-qrcode",
     "version": "1.0.2",
     "privacy": "public",
-    "platforms": ["android"],
+    "platforms": [
+      "android"
+    ],
     "orientation": "portrait",
     "icon": "./assets/image/en-app-icon.png",
     "userInterfaceStyle": "light",
@@ -29,7 +31,8 @@
       "infoPlist": {
         "NSCameraUsageDescription": "Allow $(PRODUCT_NAME) to access camera.",
         "NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to access your microphone"
-      }
+      },
+      "bundleIdentifier": "com.willianrbarbosa.estounessaqrcode"
     },
     "android": {
       "adaptiveIcon": {

@@ -25,6 +25,8 @@ export default function HomePage({navigation}) {
       if (leituras !== null) {
         const QRCodes = JSON.parse(leituras);
         setLeituraQRCodes(QRCodes);
+      } else {
+        setLeituraQRCodes({});
       }
     } catch (error) {
       console.log(error);
