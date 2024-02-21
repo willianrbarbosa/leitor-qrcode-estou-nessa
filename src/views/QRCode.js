@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { appCss } from "../../assets/css/AppCss";
 import { qrCodeCss } from '../../assets/css/QRCodeCss';
-import { Text, View, StyleSheet, Button } from "react-native";
+import { Text, View } from "react-native";
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import AwesomeAlert from 'react-native-awesome-alerts';
-import { useRoute } from "@react-navigation/native"
-import Footer from "../components/Footer";
+import { useRoute } from "@react-navigation/native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from "moment";
 import { theme } from '../core/theme';
@@ -29,23 +28,23 @@ export default function QRCodePage() {
   });
   const [displayQR, setDisplayQR ] = useState('flex');
 
+  const getQRCodes = async () => {
+    try {
+      const leituras = await AsyncStorage.getItem('QRCODES');
+      if (leituras !== null) {
+        const QRCodes = JSON.parse(leituras);
+        setLeituraQRCodes(QRCodes);
+        setLoading(false);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     const getBarCodeScannerPermissions = async () => {
       const { status } = await BarCodeScanner.requestPermissionsAsync();
       setHasPermission(status === 'granted');
-    };
-
-    const getQRCodes = async () => {
-      try {
-        const leituras = await AsyncStorage.getItem('QRCODES');
-        if (leituras !== null) {
-          const QRCodes = JSON.parse(leituras);
-          setLeituraQRCodes(QRCodes);
-          setLoading(false);
-        }
-      } catch (error) {
-        console.log(error);
-      }
     };
     
     getBarCodeScannerPermissions();
@@ -89,7 +88,7 @@ export default function QRCodePage() {
         `Texto ${data}`
       );
 
-      setLeituraQRCodes(QRCodes);
+      getQRCodes();
     } catch (error) {
       showAlert(
         'error', 

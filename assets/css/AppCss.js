@@ -44,6 +44,16 @@ const appCss = StyleSheet.create({
     fontSize: 20,
     color: theme.colors.estounessa,
   },
+  buttonTextOutlined: {
+    fontWeight: 'bold',
+    fontSize: 20,
+    color: theme.colors.surface,
+  },
+  buttonTextSecondary: {
+    fontWeight: 'bold',
+    fontSize: 20,
+    color: theme.colors.secondary,
+  },
   buttonImage: {
     maxWidth: 120,
     maxHeight: 80,
@@ -87,6 +97,16 @@ const appCss = StyleSheet.create({
     fontWeight: 'light',
     fontSize: 12,
     color: theme.colors.estounessa,
+  },
+  leituraTextSecondary: {
+    fontWeight: 'bold',
+    fontSize: 14,
+    color: theme.colors.secondary,
+  },
+  leituraDataSecondary: {
+    fontWeight: 'light',
+    fontSize: 12,
+    color: theme.colors.secondary,
   },
   scrollView: {
     marginHorizontal: 5,

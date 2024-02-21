@@ -1,31 +1,71 @@
-import React from "react";
+import React, { useState, useEffect } from 'react';
 import { appCss } from "../../assets/css/AppCss";
-import { Image, Text, TouchableOpacity, View } from "react-native";
-import Background from '../components/Background';
+import { Image, Text, TouchableOpacity, View, SafeAreaView, ScrollView } from "react-native";
 import Button from '../components/Button';
-import { useRoute } from "@react-navigation/native"
-import Footer from "../components/Footer";
+import { useIsFocused } from "@react-navigation/native";
+import moment from "moment";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function HomePage({navigation}) {
-  const route = useRoute();
-  const nomeSessao = route.params?.nomeSessao;
-  const pontoLeitura = route.params?.pontoLeitura;
+  const isFocused = useIsFocused();
+  const [nomeSessao, setNomeSessao] = useState();
+  const [pontoLeitura, setPontoLeitura] = useState();
+  const [leituraQRCodes, setLeituraQRCodes] = useState({});
 
-  const logOut = async () => {
+  const getDadosAcesso = async () => {
     try {
-      await AsyncStorage.removeItem('QRCODES');
+      const access = await AsyncStorage.getItem('ACCESS');
+      if (access !== null) {
+        const dadosAcesso = JSON.parse(access);
+        setNomeSessao(dadosAcesso.nomeSessao);
+        setPontoLeitura(dadosAcesso.pontoLeitura);
+      }
+
+      const leituras = await AsyncStorage.getItem('QRCODES');
+      if (leituras !== null) {
+        const QRCodes = JSON.parse(leituras);
+        setLeituraQRCodes(QRCodes);
+      }
     } catch (error) {
       console.log(error);
     }
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'LoginPage' }],
-    })
+  };
+  
+  useEffect(() => {
+    getDadosAcesso();
+  }, [isFocused]);
+
+  const logOut = async () => {
+    try {
+      await AsyncStorage.removeItem('ACCESS');
+      await AsyncStorage.removeItem('QRCODES');
+
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'LoginPage' }],
+      })
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
-    <Background>
+    <SafeAreaView style={{...appCss.container, alignItems: 'left', paddingLeft: 20, paddingRight: 20, justifyContent: 'left'}}>
+
+      <ScrollView style={appCss.scrollView}>
+        <Text style={appCss.buttonText}>Sessão ativa:</Text>      
+        <View key='activeSession' style={{ ...appCss.leituraCard, marginTop: 5, marginBottom: 20}}>
+          <Text style={appCss.leituraTextSecondary}>Nome: {nomeSessao}</Text>
+          <Text style={appCss.leituraTextSecondary}>Ponto de Leitura: {pontoLeitura}</Text>
+        </View>
+
+        <Text style={appCss.buttonText}>Total Números Lidos:</Text>      
+        <View key='qrCodesCount' style={{ ...appCss.leituraCard, marginTop: 5, marginBottom: 20}}>
+          <Text style={appCss.leituraTextSecondary}>Qtde.: {leituraQRCodes.leituras ? leituraQRCodes.leituras.length : 0}</Text>
+          <Text style={appCss.leituraDataSecondary}>Data: {moment().format('DD/MM/YYYY')}</Text>
+        </View>
+      </ScrollView>
+
       <TouchableOpacity
         style={appCss.buttonQrCode}
         title='Ler QRCode'
@@ -59,8 +99,6 @@ export default function HomePage({navigation}) {
       <Button mode="outlined" onPress={logOut}>
         Iniciar nova sessão
       </Button>
-
-      <Footer nomeSessao={nomeSessao} pontoLeitura={pontoLeitura}/>
-    </Background>
+    </SafeAreaView>
   );
 }

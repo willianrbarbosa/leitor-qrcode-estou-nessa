@@ -20,7 +20,7 @@ export default function App() {
           component={HomePage}
           options={{
             title: 'Leitor QRCode - Menu',
-            headerStyle: { backgroundColor: theme.colors.estounessa, height: 60 },
+            headerStyle: { backgroundColor: theme.colors.secondary, height: 60 },
             headerTitleStyle: { fontWeight: 'bold', alignSelf: 'center', margin: 'auto' },
             headerTintColor: theme.colors.surface,
           }}
@@ -30,7 +30,7 @@ export default function App() {
           component={QRCodePage}
           options={{
             title: 'Ler QRCode',
-            headerStyle: { backgroundColor: theme.colors.estounessa, height: 60 },
+            headerStyle: { backgroundColor: theme.colors.secondary, height: 60 },
             headerTitleStyle: { fontWeight: 'bold', alignSelf: 'center', margin: 'auto' },
             headerTintColor: theme.colors.surface,
           }}
@@ -40,7 +40,7 @@ export default function App() {
           component={FinalizarLeitura}
           options={{
             title: 'Finalizar Leitura',
-            headerStyle: { backgroundColor: theme.colors.estounessa, height: 60 },
+            headerStyle: { backgroundColor: theme.colors.secondary, height: 60 },
             headerTitleStyle: { fontWeight: 'bold', alignSelf: 'center', margin: 'auto' },
             headerTintColor: theme.colors.surface,
           }}
